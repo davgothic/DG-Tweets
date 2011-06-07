@@ -4,12 +4,12 @@ Plugin Name: DG-Tweets
 Plugin URI: http://davgothic.com/dg-tweets-wordpress-plugin/
 Description: A widget that displays your Twitter Tweets
 Author: David Hancock
-Version: v0.1
+Version: v1.1
 Author URI: http://davgothic.com
 */
 
 class DG_Tweets extends WP_Widget {
-	
+
 	private $dg_defaults;
 	private $tweets_cache;
 
@@ -167,6 +167,7 @@ class DG_Tweets extends WP_Widget {
 		if ( ! file_exists($this->tweets_cache) OR filemtime($this->tweets_cache) < (time() - $cachelength))
 		{
 			$curl = curl_init($twitter_api);
+			curl_setopt($curl, CURLOPT_USERAGENT, 'DG-Tweets/1.1 (+http://github.com/davgothic/DG-Tweets)');
 			curl_setopt($curl, CURLOPT_RETURNTRANSFER, TRUE);
 			$result = curl_exec($curl);
 			curl_close ($curl);
@@ -238,16 +239,14 @@ class DG_Tweets extends WP_Widget {
 		{
 			return 'about '. (int) ($delta / 3600).' hours ago';
 		}
-		else if ($delta < (48 * 60 * 60))
-		{
-			return '1 day ago';
-		}
 		else
 		{
-			return (int) ($delta / 86400).' days ago';
+			return date('j F', $parsed_date);
 		}
 	}
 
 }
 
 DG_Tweets::dg_load();
+
+?>
